@@ -156,6 +156,10 @@ class Strided_App {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'init', $plugin_admin, 'action_init_register_horse_post_type' );
+		$this->loader->add_action( 'init', $plugin_admin, 'action_init_register_arena_post_type' );
+		$this->loader->add_action( 'init', $plugin_admin, 'action_init_register_run_post_type' );
+		$this->loader->add_filter( 'enter_title_here', $plugin_admin, 'filter_enter_title_here_change_title_text' );
 
 	}
 
