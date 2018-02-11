@@ -4,14 +4,17 @@
  */
 
  .horse-information label,
- .arena-information label {
+ .arena-information label,
+ .run-information label {
  	display: block;
  	margin-bottom: 0.5rem;
  }
 
  .horse-information input,
  .horse-information select,
- .arena-information textarea {
+ .arena-information textarea,
+ .run-information input,
+ .run-information select {
  	display: block;
  	width: 100%;
  }

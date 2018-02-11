@@ -323,6 +323,63 @@ class Strided_App_Admin {
 	}
 
 	/**
+	 * Add meta field area to the run post type.
+	 *
+	 * @since    1.0.0
+	 */
+
+	public function action_add_meta_boxes_run_meta() {
+		add_meta_box( 'run-information', 'Run Information', array( $this, 'callback_action_add_meta_boxes_run_meta' ), 'run', 'side', $priority = 'default' );
+	}
+
+	/**
+	 * Fill the run meta field area with custom fields.
+	 *
+	 * @since    1.0.0
+	 */
+
+	public function callback_action_add_meta_boxes_run_meta( $post ) {
+		$run_info = get_post_meta( get_the_ID() );
+		$args_arenas = array(
+			'post_type' => 'arena',
+			'author'    => get_current_user_id(),
+		);
+		$arenas = new WP_Query( $args_arenas );
+
+		$args_horses = array(
+			'post_type' => 'horse',
+			'author'    => get_current_user_id(),
+		);
+		$horses = new WP_Query( $args_horses );
+
+
+		require_once plugin_dir_path( __FILE__ ) . 'partials/run-admin-display.php';
+	}
+
+	/**
+	 * Saves the run custom fields to the database.
+	 *
+	 * @since    1.0.0
+	 */
+
+	function action_save_post_run_meta ( $post_id ) {
+		if ( ! isset( $_POST['run_information_meta_box_nonce'] ) || ! wp_verify_nonce( $_POST['run_information_meta_box_nonce'], 'run_information_meta_box_nonce' ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$fields = array( 'arena', 'horse', 'placing', 'class', 'time', 'winnings' );
+
+		foreach ( $fields as $field ) {
+			update_post_meta( $post_id, '_run_' . $field, $_POST[ 'run_' . $field ] );
+		}
+
+	}
+
+	/**
 	 * Filter the title field placeholder text for the custom post types
 	 *
 	 * @since    1.0.0
