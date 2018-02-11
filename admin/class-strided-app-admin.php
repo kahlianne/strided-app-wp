@@ -124,25 +124,54 @@ class Strided_App_Admin {
 			'menu_position'      => null,
 			'show_in_rest'       => true,
 			'menu_icon'          => 'dashicons-star-filled',
-			'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'revisions' ),
+			'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'revisions' ),
 		);
 
 		register_post_type( 'horse', $args );
 	}
 
-	function filter_enter_title_here_change_title_text( $title ){
+	/**
+	 * Add meta field area to the horse post type.
+	 *
+	 * @since    1.0.0
+	 */
 
-		$screen = get_current_screen();
+	public function action_add_meta_boxes_horse_meta() {
+		add_meta_box( 'horse-information', 'Horse Information', array( $this, 'callback_action_add_meta_boxes_horse_meta' ), 'horse', 'side', $priority = 'default' );
+	}
 
-		if ( 'horse' == $screen->post_type ) {
-			$title = 'Enter horse name';
-		} else if ( 'arena' == $screen->post_type ) {
-			$title = 'Enter arena name';
-		} else if ( 'run' == $screen->post_type ) {
-			$title = 'Enter run identifier';
+	/**
+	 * Fill the horse meta field area with custom fields.
+	 *
+	 * @since    1.0.0
+	 */
+
+	public function callback_action_add_meta_boxes_horse_meta( $post ) {
+		require_once plugin_dir_path( __FILE__ ) . 'partials/horse-admin-display.php';
+	}
+
+	/**
+	 * Saves the horse custom fields to the database.
+	 *
+	 * @since    1.0.0
+	 */
+
+	function action_save_post_hores_meta ( $post_id ) {
+		if ( ! isset( $_POST['horse_information_meta_box_nonce'] ) || ! wp_verify_nonce( $_POST['horse_information_meta_box_nonce'], 'horse_information_meta_box_nonce' ) ) {
+			return;
 		}
 
-		return $title;
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$registered_name = sanitize_text_field( $_POST[ 'horse_registered_name' ] );
+		update_post_meta( $post_id, '_horse_registered_name', $registered_name );
+		$year_born = sanitize_text_field( $_POST[ 'horse_year_born' ] );
+		update_post_meta( $post_id, '_horse_year_born', $year_born );
+		$gender = sanitize_text_field( $_POST[ 'horse_gender' ] );
+		update_post_meta( $post_id, '_horse_gender', $gender );
+
 	}
 
 	/**
@@ -251,5 +280,25 @@ class Strided_App_Admin {
 		);
 
 		register_post_type( 'run', $args );
+	}
+
+	/**
+	 * Filter the title field placeholder text for the custom post types
+	 *
+	 * @since    1.0.0
+	 */
+	function filter_enter_title_here_change_title_text( $title ){
+
+		$screen = get_current_screen();
+
+		if ( 'horse' == $screen->post_type ) {
+			$title = 'Enter horse name';
+		} else if ( 'arena' == $screen->post_type ) {
+			$title = 'Enter arena name';
+		} else if ( 'run' == $screen->post_type ) {
+			$title = 'Enter run identifier';
+		}
+
+		return $title;
 	}
 }
