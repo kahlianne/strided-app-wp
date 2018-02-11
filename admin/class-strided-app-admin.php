@@ -156,7 +156,7 @@ class Strided_App_Admin {
 	 * @since    1.0.0
 	 */
 
-	function action_save_post_hores_meta ( $post_id ) {
+	function action_save_post_horse_meta ( $post_id ) {
 		if ( ! isset( $_POST['horse_information_meta_box_nonce'] ) || ! wp_verify_nonce( $_POST['horse_information_meta_box_nonce'], 'horse_information_meta_box_nonce' ) ) {
 			return;
 		}
@@ -226,6 +226,46 @@ class Strided_App_Admin {
 		);
 
 		register_post_type( 'arena', $args );
+	}
+
+	/**
+	 * Add meta field area to the arena post type.
+	 *
+	 * @since    1.0.0
+	 */
+
+	public function action_add_meta_boxes_arena_meta() {
+		add_meta_box( 'arena-information', 'Arena Information', array( $this, 'callback_action_add_meta_boxes_arena_meta' ), 'arena', 'side', $priority = 'default' );
+	}
+
+	/**
+	 * Fill the arena meta field area with custom fields.
+	 *
+	 * @since    1.0.0
+	 */
+
+	public function callback_action_add_meta_boxes_arena_meta( $post ) {
+		require_once plugin_dir_path( __FILE__ ) . 'partials/arena-admin-display.php';
+	}
+
+	/**
+	 * Saves the arena custom fields to the database.
+	 *
+	 * @since    1.0.0
+	 */
+
+	function action_save_post_arena_meta ( $post_id ) {
+		if ( ! isset( $_POST['arena_information_meta_box_nonce'] ) || ! wp_verify_nonce( $_POST['arena_information_meta_box_nonce'], 'arena_information_meta_box_nonce' ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$address = sanitize_text_field( $_POST[ 'arena_address' ] );
+		update_post_meta( $post_id, '_arena_address', $address );
+
 	}
 
 	/**

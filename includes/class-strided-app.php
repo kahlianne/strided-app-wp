@@ -67,8 +67,8 @@ class Strided_App {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
-			$this->version = PLUGIN_NAME_VERSION;
+		if ( defined( 'STRIDED_APP_VERSION' ) ) {
+			$this->version = STRIDED_APP_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
@@ -161,7 +161,9 @@ class Strided_App {
 		$this->loader->add_action( 'init', $plugin_admin, 'action_init_register_run_post_type' );
 		$this->loader->add_filter( 'enter_title_here', $plugin_admin, 'filter_enter_title_here_change_title_text' );
 		$this->loader->add_action( 'add_meta_boxes_horse', $plugin_admin, 'action_add_meta_boxes_horse_meta' );
-		$this->loader->add_action( 'save_post', $plugin_admin, 'action_save_post_hores_meta' );
+		$this->loader->add_action( 'save_post', $plugin_admin, 'action_save_post_horse_meta' );
+		$this->loader->add_action( 'add_meta_boxes_arena', $plugin_admin, 'action_add_meta_boxes_arena_meta' );
+		$this->loader->add_action( 'save_post', $plugin_admin, 'action_save_post_arena_meta' );
 
 	}
 

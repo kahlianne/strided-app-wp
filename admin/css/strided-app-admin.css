@@ -3,13 +3,15 @@
  * included in this file.
  */
 
- .horse-information label {
+ .horse-information label,
+ .arena-information label {
  	display: block;
  	margin-bottom: 0.5rem;
  }
 
  .horse-information input,
- .horse-information select {
+ .horse-information select,
+ .arena-information textarea {
  	display: block;
  	width: 100%;
  }
