@@ -222,7 +222,7 @@ class Strided_App_Admin {
 			'menu_position'      => null,
 			'show_in_rest'       => true,
 			'menu_icon'          => 'dashicons-megaphone',
-			'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'revisions' ),
+			'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'revisions' ),
 		);
 
 		register_post_type( 'arena', $args );
@@ -316,7 +316,7 @@ class Strided_App_Admin {
 			'menu_position'      => null,
 			'show_in_rest'       => true,
 			'menu_icon'          => 'dashicons-awards',
-			'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'revisions' ),
+			'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'revisions' ),
 		);
 
 		register_post_type( 'run', $args );
@@ -371,10 +371,24 @@ class Strided_App_Admin {
 			return;
 		}
 
-		$fields = array( 'arena', 'horse', 'placing', 'class', 'time', 'winnings' );
+		$fields = array( 
+			'arena'    => 'text',
+			'horse'    => 'text',
+			'placing'  => 'text',
+			'class'    => 'text',
+			'time'     => 'floatval',
+			'winnings' => 'floatval' 
+		);
 
-		foreach ( $fields as $field ) {
-			update_post_meta( $post_id, '_run_' . $field, $_POST[ 'run_' . $field ] );
+		foreach ( $fields as $field => $type ) {
+			if ( 'text' == $type ) {
+				$data = sanitize_text_field( $_POST[ 'run_' . $field ] );
+			} elseif ( 'floatval' == $type ) {
+				$remove_commas = preg_replace('/,/', '', $_POST[ 'run_' . $field ] );
+				$data = floatval( $remove_commas );
+				//$data = floatval( $_POST[ 'run_' . $field ] );
+			}
+			update_post_meta( $post_id, '_run_' . $field, $data );
 		}
 
 	}

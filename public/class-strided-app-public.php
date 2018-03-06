@@ -61,18 +61,6 @@ class Strided_App_Public {
 	 */
 	public function enqueue_styles() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Strided_App_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Strided_App_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/strided-app-public.css', array(), $this->version, 'all' );
 
 	}
@@ -84,20 +72,42 @@ class Strided_App_Public {
 	 */
 	public function enqueue_scripts() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Strided_App_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Strided_App_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/strided-app-public.js', array( 'jquery' ), $this->version, false );
 
+	}
+
+	public function action_init_register_shortcodes() {
+		add_shortcode( 'strided', array( $this, 'strided_shortcode' ) );
+	}
+
+	public function strided_shortcode( $atts ) {
+		$a = shortcode_atts( array(
+			'type' => 'horse',
+			'number' => 6
+			), $atts 
+		);
+		$query_args = array(
+			'author' => get_current_user_id(),
+			'post_type' => $a[ 'type' ],
+			'posts_per_page' => $a[ 'number' ],
+			'orderby' => 'name',
+			'order' => 'ASC',
+		);
+		$query = new WP_Query( $query_args );
+
+		echo '<ul class="horse-grid">';
+		while( $query->have_posts() ) {
+			$query->the_post();
+			echo '<li><a href="' . get_permalink( $post ) . '"><div class="item-image">';
+			the_post_thumbnail( 'post-thumbnail' );
+			echo '</div><div class="item-name">';
+			the_title();
+			echo '</div></a></li>';
+		}
+		echo '</ul>';
+		// End the query
+		wp_reset_postdata();
+			
 	}
 
 }
