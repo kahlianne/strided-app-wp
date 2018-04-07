@@ -1,0 +1,16 @@
+.wp-block-strided-app-strided-member-content {
+  background: rgba(254, 243, 224, 0.52);
+  border: 5px #f7b733 solid;
+  padding: 1rem; }
+  .wp-block-strided-app-strided-member-content.high-contrast {
+    background: #000;
+    border-color: #000;
+    color: white; }
+  .wp-block-strided-app-strided-member-content h2 {
+    color: #f7b733;
+    font-size: 2rem;
+    margin: 1rem 0; }
+  .wp-block-strided-app-strided-member-content p {
+    font-size: 1.4rem; }
+  .wp-block-strided-app-strided-member-content li {
+    list-style-position: inside; }

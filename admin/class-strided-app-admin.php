@@ -412,4 +412,62 @@ class Strided_App_Admin {
 
 		return $title;
 	}
+
+	function blocks_editor_scripts() {
+
+		// Make paths variables so we don't write em twice ;)
+		$blockPath = '../blocks/assets/js/editor.blocks.js';
+		$editorStylePath = '../blocks/assets/css/blocks.editor.css';
+
+		// Enqueue the bundled block JS file
+		wp_enqueue_script(
+			'strided-blocks-js',
+			plugins_url( $blockPath, __FILE__ ),
+			[ 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components', 'wp-api' ],
+			filemtime( plugin_dir_path(__FILE__) . $blockPath )
+		);
+
+		// Pass in REST URL
+		wp_localize_script(
+			'strided-blocks-js',
+			'strided_globals',
+			[
+				'rest_url' => esc_url( rest_url() )
+			]);
+
+
+		// Enqueue optional editor only styles
+		wp_enqueue_style(
+			'strided-blocks-editor-css',
+			plugins_url( $editorStylePath, __FILE__),
+			[ 'wp-blocks' ],
+			filemtime( plugin_dir_path( __FILE__ ) . $editorStylePath )
+		);
+
+	}
+
+	/**
+ * Enqueue front end and editor JavaScript and CSS
+ */
+	function strided_block_scripts() {
+		$blockPath = '../blocks/assets/js/frontend.blocks.js';
+    	// Make paths variables so we don't write em twice ;)
+		$stylePath = '../blocks/assets/css/blocks.style.css';
+
+    	// Enqueue the bundled block JS file
+		// wp_enqueue_script(
+		// 	'jsforwp-blocks-frontend-js',
+		// 	plugins_url( $blockPath, __FILE__ ),
+		// 	[ 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components', 'wp-api' ],
+		// 	filemtime( plugin_dir_path(__FILE__) . $blockPath )
+		// );
+
+    	// Enqueue frontend and editor block styles
+		wp_enqueue_style(
+			'strided-blocks-css',
+			plugins_url($stylePath, __FILE__),
+			[ 'wp-blocks' ],
+			filemtime(plugin_dir_path(__FILE__) . $stylePath )
+		);
+	}
 }
