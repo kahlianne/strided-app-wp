@@ -32,15 +32,24 @@
 	</select><br />
 
 	<label for="run_placing">Placing</label>
-	<input id="run_placing" name="run_placing" value="<?php esc_attr_e( $run_info[ '_run_placing' ][0] ); ?>" /><br />
+	<input id="run_placing" name="run_placing" value="<?php if ( isset( $run_info[ '_run_placing' ][0] ) ) { esc_attr_e( $run_info[ '_run_placing' ][0] ); } ?>" /><br />
 
 	<label for="run_class">Class</label>
-	<input id="run_class" name="run_class" value="<?php esc_attr_e( $run_info[ '_run_class' ][0] ); ?>"/><br />
+	<input id="run_class" name="run_class" value="<?php if ( isset( $run_info[ '_run_class' ][0] ) ) { esc_attr_e( $run_info[ '_run_class' ][0] ); } ?>"/><br />
 
 	<label for="run_time">Time</label>
-	<input id="run_time" name="run_time" value="<?php esc_attr_e( $run_info[ '_run_time' ][0] ); ?>"/><br />
+	<input id="run_time" name="run_time" value="<?php if ( isset( $run_info[ '_run_time' ][0] ) ) { esc_attr_e( $run_info[ '_run_time' ][0] ); } ?>"/><br />
 
 	<label for="run_winnings">Winnings</label>
-	<input id="run_winnings" name="run_winnings" value="<?php esc_attr_e( $run_info[ '_run_winnings' ][0] ); ?>"/><br />
+	<input id="run_winnings" name="run_winnings" value="<?php if ( isset( $run_info[ '_run_winnings' ][0] ) ) { esc_attr_e( $run_info[ '_run_winnings' ][0] ); } ?>"/><br />
 
+	<label for="run_video">Video</label>
+	<input id="run_video" name="run_video" value="<?php if ( isset( $run_info[ '_run_video' ][0] ) ) { esc_attr_e( $run_info[ '_run_video' ][0] ); } ?>"/><br />
+	<?php if ( isset( $run_info[ '_run_video' ][0] ) && null != $run_info[ '_run_video' ][0] ) :
+		$video_number = preg_match('/\d{9}/', $run_info[ '_run_video' ][0], $matches);
+	?>
+	<div class="run-video">
+		<iframe src="https://player.vimeo.com/video/<?php _e( $matches[0] ); ?>" width="254" height="auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+	</div>
+	<?php endif; ?>
 </div>

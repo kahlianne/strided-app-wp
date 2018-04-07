@@ -352,7 +352,6 @@ class Strided_App_Admin {
 		);
 		$horses = new WP_Query( $args_horses );
 
-
 		require_once plugin_dir_path( __FILE__ ) . 'partials/run-admin-display.php';
 	}
 
@@ -377,7 +376,8 @@ class Strided_App_Admin {
 			'placing'  => 'text',
 			'class'    => 'text',
 			'time'     => 'floatval',
-			'winnings' => 'floatval' 
+			'winnings' => 'floatval',
+			'video'    => 'url'
 		);
 
 		foreach ( $fields as $field => $type ) {
@@ -387,6 +387,8 @@ class Strided_App_Admin {
 				$remove_commas = preg_replace('/,/', '', $_POST[ 'run_' . $field ] );
 				$data = floatval( $remove_commas );
 				//$data = floatval( $_POST[ 'run_' . $field ] );
+			} elseif ( 'url == $type ') {
+				$data = esc_url_raw( $_POST[ 'run_' . $field ] );
 			}
 			update_post_meta( $post_id, '_run_' . $field, $data );
 		}
@@ -407,7 +409,7 @@ class Strided_App_Admin {
 		} else if ( 'arena' == $screen->post_type ) {
 			$title = 'Enter arena name';
 		} else if ( 'run' == $screen->post_type ) {
-			$title = 'Enter run identifier';
+			$title = 'Enter run date';
 		}
 
 		return $title;
