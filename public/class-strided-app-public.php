@@ -76,38 +76,27 @@ class Strided_App_Public {
 
 	}
 
-	public function action_init_register_shortcodes() {
-		add_shortcode( 'strided', array( $this, 'strided_shortcode' ) );
-	}
-
-	public function strided_shortcode( $atts ) {
-		$a = shortcode_atts( array(
-			'type' => 'horse',
-			'number' => 6
-			), $atts 
-		);
-		$query_args = array(
-			'author' => get_current_user_id(),
-			'post_type' => $a[ 'type' ],
-			'posts_per_page' => $a[ 'number' ],
-			'orderby' => 'name',
-			'order' => 'ASC',
-		);
-		$query = new WP_Query( $query_args );
-
-		echo '<ul class="horse-grid">';
-		while( $query->have_posts() ) {
-			$query->the_post();
-			echo '<li><a href="' . get_permalink( $post ) . '"><div class="item-image">';
-			the_post_thumbnail( 'post-thumbnail' );
-			echo '</div><div class="item-name">';
-			the_title();
-			echo '</div></a></li>';
+	public function filter_add_horse_field_options( $options, $settings ){
+		if( 'horse' == $settings['key'] || 'arena' == $settings['key'] ){
+			$args = array(
+				'author' => get_current_user_id(),
+				'post_type' => $settings['key'],
+				'orderby' => 'menu_order',
+				'order' => 'ASC',
+				'posts_per_page' => -1,
+				'post_status' => 'publish'
+			);
+			$the_query = new WP_Query( $args ); 
+			if ( $the_query->have_posts() ){
+				global $post;
+				while ( $the_query->have_posts() ){
+					$the_query->the_post();
+					$options[] = array('label' => get_the_title(), 'value' => get_the_ID() );
+				}
+				wp_reset_postdata(); 
+			}
 		}
-		echo '</ul>';
-		// End the query
-		wp_reset_postdata();
-			
+		return $options;
 	}
 
 }
