@@ -1,16 +1,21 @@
-.wp-block-strided-app-strided-member-content {
+.entry-content .wp-block-jsforwpblocks-inspector-control-fields,
+.wp-block-jsforwpblocks-inspector-control-fields {
   background: rgba(254, 243, 224, 0.52);
   border: 5px #f7b733 solid;
   padding: 1rem; }
-  .wp-block-strided-app-strided-member-content.high-contrast {
+  .entry-content .wp-block-jsforwpblocks-inspector-control-fields.high-contrast,
+  .wp-block-jsforwpblocks-inspector-control-fields.high-contrast {
     background: #000;
     border-color: #000;
     color: white; }
-  .wp-block-strided-app-strided-member-content h2 {
+  .entry-content .wp-block-jsforwpblocks-inspector-control-fields h2,
+  .wp-block-jsforwpblocks-inspector-control-fields h2 {
     color: #f7b733;
     font-size: 2rem;
     margin: 1rem 0; }
-  .wp-block-strided-app-strided-member-content p {
+  .entry-content .wp-block-jsforwpblocks-inspector-control-fields p,
+  .wp-block-jsforwpblocks-inspector-control-fields p {
     font-size: 1.4rem; }
-  .wp-block-strided-app-strided-member-content li {
+  .entry-content .wp-block-jsforwpblocks-inspector-control-fields li,
+  .wp-block-jsforwpblocks-inspector-control-fields li {
     list-style-position: inside; }
