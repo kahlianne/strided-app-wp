@@ -361,7 +361,7 @@ class Strided_App_Admin {
 	 * @since    1.0.0
 	 */
 
-	function action_save_post_run_meta ( $post_id ) {
+	public function action_save_post_run_meta ( $post_id ) {
 		if ( ! isset( $_POST['run_information_meta_box_nonce'] ) || ! wp_verify_nonce( $_POST['run_information_meta_box_nonce'], 'run_information_meta_box_nonce' ) ) {
 			return;
 		}
@@ -400,7 +400,7 @@ class Strided_App_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	function filter_enter_title_here_change_title_text( $title ){
+	public function filter_enter_title_here_change_title_text( $title ){
 
 		$screen = get_current_screen();
 
@@ -415,7 +415,7 @@ class Strided_App_Admin {
 		return $title;
 	}
 
-	function blocks_editor_scripts() {
+	public function blocks_editor_scripts() {
 
 		// Make paths variables so we don't write em twice ;)
 		$blockPath = '../blocks/assets/js/editor.blocks.js';
@@ -449,9 +449,9 @@ class Strided_App_Admin {
 	}
 
 	/**
- * Enqueue front end and editor JavaScript and CSS
- */
-	function strided_block_scripts() {
+ 	* Enqueue front end and editor JavaScript and CSS
+ 	*/
+	public function strided_block_scripts() {
 		$blockPath = '../blocks/assets/js/frontend.blocks.js';
     	// Make paths variables so we don't write em twice ;)
 		$stylePath = '../blocks/assets/css/blocks.style.css';
@@ -471,5 +471,49 @@ class Strided_App_Admin {
 			[ 'wp-blocks' ],
 			filemtime(plugin_dir_path(__FILE__) . $stylePath )
 		);
+	}
+
+	/**
+ 	* Callback function for displaying block content on the front end
+ 	*/
+	public function strided_member_content_block_render( $attributes ) {
+
+		$recent_posts = wp_get_recent_posts( [
+			'numberposts' => 3,
+			'post_status' => 'publish',
+			'post_type'   => 'horse'
+		] );
+
+		if ( 0 === count( $recent_posts ) ) {
+			return '<p>No posts</p>';
+		}
+		$markup = '<ul>';
+
+		foreach( $recent_posts as $post ) {
+			$post_id = $post['ID'];
+			$markup .= sprintf(
+				'<li><a href="%1$s">%2$s</a></li>',
+				esc_url( get_permalink( $post_id ) ),
+				esc_html( get_the_title( $post_id ) )
+			);
+		}
+		$markup .= '<ul>';
+
+		print_r($attributes);
+
+		return $markup;
+
+	}
+
+	/**
+ 	* Register the block if Gutenberg exists
+ 	*/
+	function action_init_register_block() {
+		if ( function_exists( 'register_block_type' ) ) {
+		  	// Hook server side rendering into render callback
+			register_block_type( 'strided-app/strided-member-content', [
+				'render_callback' => array( $this, 'strided_member_content_block_render'),
+			] );
+		}
 	}
 }

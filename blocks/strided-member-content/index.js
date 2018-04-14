@@ -13,15 +13,15 @@ const {
     InspectorControls,
 } = wp.blocks;
 const {
-  Spinner,
-  withAPIData,
+    Spinner,
+    withAPIData,
 } = wp.components;
 
 /**
  * Register static block example block
  */
 export default registerBlockType(
-    'strided-app/inspector-control-fields',
+    'strided-app/strided-member-content',
     {
         title: 'Strided Member Content',
         description: 'Add the display for horses, arenas, and runs.',

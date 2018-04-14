@@ -161,6 +161,7 @@ class Strided_App {
 		$this->loader->add_action( 'init', $plugin_admin, 'action_init_register_horse_post_type' );
 		$this->loader->add_action( 'init', $plugin_admin, 'action_init_register_arena_post_type' );
 		$this->loader->add_action( 'init', $plugin_admin, 'action_init_register_run_post_type' );
+		$this->loader->add_action( 'init', $plugin_admin, 'action_init_register_block' );
 		$this->loader->add_filter( 'enter_title_here', $plugin_admin, 'filter_enter_title_here_change_title_text' );
 		$this->loader->add_action( 'add_meta_boxes_horse', $plugin_admin, 'action_add_meta_boxes_horse_meta' );
 		$this->loader->add_action( 'save_post_horse', $plugin_admin, 'action_save_post_horse_meta' );
