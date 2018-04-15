@@ -46,6 +46,7 @@ export default registerBlockType(
             } )( props => {
                 if ( ! props.posts.data ) {
                     return (
+                        props.isSelected && <Inspector { ...props } />,
                         <p className={props.className} >
                             <Spinner />
                             { 'Loading Posts' }

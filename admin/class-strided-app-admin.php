@@ -477,11 +477,22 @@ class Strided_App_Admin {
  	* Callback function for displaying block content on the front end
  	*/
 	public function strided_member_content_block_render( $attributes ) {
+		$post_type = 'horse';
+
+		if ( isset( $attributes['radioControl'] ) ) {
+			$post_type = $attributes['radioControl'];
+		}
+
+		$numposts = 10;
+
+		if ( isset( $attributes['rangeControl'] ) ) {
+			$numposts = $attributes['rangeControl'];
+		}
 
 		$recent_posts = wp_get_recent_posts( [
-			'numberposts' => 3,
+			'numberposts' => $numposts,
 			'post_status' => 'publish',
-			'post_type'   => 'horse'
+			'post_type'   => $post_type
 		] );
 
 		if ( 0 === count( $recent_posts ) ) {
@@ -499,7 +510,7 @@ class Strided_App_Admin {
 		}
 		$markup .= '<ul>';
 
-		print_r($attributes);
+		$markup .= implode( ' ' , $attributes );
 
 		return $markup;
 
@@ -511,9 +522,9 @@ class Strided_App_Admin {
 	function action_init_register_block() {
 		if ( function_exists( 'register_block_type' ) ) {
 		  	// Hook server side rendering into render callback
-			register_block_type( 'strided-app/strided-member-content', [
+			register_block_type( 'strided-app/strided-member-content', array(
 				'render_callback' => array( $this, 'strided_member_content_block_render'),
-			] );
+			) );
 		}
 	}
 }
