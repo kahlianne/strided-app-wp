@@ -105,6 +105,7 @@ class Strided_App_Public {
 		if ( 'horse' == $post_type ) {
 			return $content . 'this is a horse';
 		}
+		return $content;
 	}
 
 }
