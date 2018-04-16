@@ -99,4 +99,12 @@ class Strided_App_Public {
 		return $options;
 	}
 
+	public function filter_the_content_strided_post_type( $content ) {
+		global $post;
+		$post_type = get_post_type( $post );
+		if ( 'horse' == $post_type ) {
+			return $content . 'this is a horse';
+		}
+	}
+
 }

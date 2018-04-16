@@ -2,31 +2,17 @@ $black: #000;
 $dark: #f7b733;
 $light: rgba(254, 243, 224, 0.52);
 
-.entry-content .wp-block-jsforwpblocks-inspector-control-fields,
-.wp-block-jsforwpblocks-inspector-control-fields {
+.entry-content .strided-member-content-block {
 
-    background: $light;
-    border: 5px $dark solid;
-    padding: 1rem;
+    .strided-member-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
 
-    &.high-contrast {
-        background: $black;
-        border-color: $black;
-        color: white;
-    }
-
-    h2 {
-        color: $dark;
-        font-size: 2rem;
-        margin: 1rem 0;
-    }
-
-    p {
-        font-size: 1.4rem;
-    }
-
-    li {
-        list-style-position: inside;
+        .strided-member-content-item {
+            width: 30%;
+            list-style-type: none;
+        }
     }
 
 }
