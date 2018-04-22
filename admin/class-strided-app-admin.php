@@ -476,15 +476,20 @@ class Strided_App_Admin {
 	/**
  	* Callback function for displaying block content on the front end
  	*/
-	public function strided_member_content_block_render( $attributes ) {
+	public static function strided_member_content_block_render( $attributes ) {
 		$numposts = $attributes['rangeControl'];
 		$post_type = $attributes['radioControl'];
-		$recent_posts = wp_get_recent_posts( [
+		$args = array(
 			'numberposts' => $numposts,
 			'post_status' => 'publish',
 			'post_type'   => $post_type,
 			'author'      => get_current_user_id(),
-		] );
+		);
+		if ( isset( $attributes[ 'metaKey' ] ) && isset( $attributes[ 'metaValue' ] ) ) {
+			$args['meta_key'] = $attributes[ 'metaKey' ];
+			$args['meta_value'] = $attributes[ 'metaValue' ];
+		}
+		$recent_posts = wp_get_recent_posts( $args );
 
 		if ( 0 === count( $recent_posts ) ) {
 			return '<p>Looks like you haven\'t added any ' . $post_type . 's yet!</p>';

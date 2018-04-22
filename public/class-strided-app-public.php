@@ -108,13 +108,13 @@ class Strided_App_Public {
 			$year_born = $post_meta['_horse_year_born'][0];
 			$gender = $post_meta['_horse_gender'][0];
 			$markup = '<div class="horse-information">';
-			if ( isset( $registered_name ) ) {
+			if ( isset( $registered_name ) && null != $registered_name ) {
 				$markup .= '<div class="horse-registered-name"><span class="label">Registered Name:</span> ' . esc_html( $registered_name ) . '</div>';
 			}
-			if ( isset( $year_born ) ) {
+			if ( isset( $year_born ) && null != $year_born ) {
 				$markup .= '<div class="horse-year-born"><span class="label">Year Born:</span> ' . esc_html( $year_born ) . '</div>';
 			}
-			if ( isset( $gender ) ) {
+			if ( isset( $gender ) && null != $gender ) {
 				$markup .= '<div class="horse-gender"><span class="label">Horse Gender:</span> ' . esc_html( $gender ) . '</div>';
 			}
 			$markup .= '<div class="horse-description">' . $content . '</div></div>';
@@ -123,7 +123,7 @@ class Strided_App_Public {
 		if ( 'arena' == $post_type ) {
 			$address = $post_meta['_arena_address'][0];
 			$markup = '<div class="arena-information">';
-			if ( isset( $address ) ) {
+			if ( isset( $address ) && null != $address ) {
 				$markup .= '<div class="arena-address"><span class="label">Address:</span> ' . esc_html( $address ) . '</div>';
 			}
 			$markup .= '<div class="arena-description">' . $content . '</div></div>';
@@ -142,22 +142,22 @@ class Strided_App_Public {
 				$video_number = preg_match('/\d{9}/', $post_meta[ '_run_video' ][0], $matches);
 			}
 			$markup = '<div class="horse-information">';
-			if ( isset( $arena ) ) {
+			if ( isset( $arena ) && null != $arena ) {
 				$markup .= '<div class="run-arena"><span class="label">Arena:</span> <a href="' . esc_url( $arena_url ) . '">' . esc_html( $arena ) . '</a></div>';
 			}
-			if ( isset( $horse ) ) {
+			if ( isset( $horse ) && null != $horse ) {
 				$markup .= '<div class="run-horse"><span class="label">Horse:</span> <a href="' . esc_url( $horse_url ) . '">' . esc_html( $horse ) . '</a></div>';
 			}
-			if ( isset( $time ) ) {
+			if ( isset( $time ) && null != $time ) {
 				$markup .= '<div class="run-time"><span class="label">Time:</span> ' . esc_html( $time ) . ' seconds</div>';
 			}
-			if ( isset( $placing ) ) {
+			if ( isset( $placing ) && null != $placing ) {
 				$markup .= '<div class="run-placing"><span class="label">Placing:</span> ' . esc_html( $placing ) . '</div>';
 			}
-			if ( isset( $class ) ) {
+			if ( isset( $class ) && null != $class ) {
 				$markup .= '<div class="run-class"><span class="label">Class:</span> ' . esc_html( $class ) . '</div>';
 			}
-			if ( isset( $winnings ) ) {
+			if ( isset( $winnings ) && null != $winnings ) {
 				$markup .= '<div class="run-winnings"><span class="label">Winnings:</span> $' . esc_html( $winnings ) . '</div>';
 			}
 			$markup .= '<div class="run-description">' . $content . '</div>';
@@ -166,6 +166,46 @@ class Strided_App_Public {
 			}
 			$markup .= '</div>';
 			return $markup;
+		}
+		return $content;
+	}
+
+	public function filter_run_titles( $title, $id = null ) {
+		$post_type = get_post_type( $id );
+		if ( 'run' == $post_type ) {
+			$post_meta = get_post_meta( $id );
+			$horse = get_the_title( $post_meta['_run_horse'][0] );
+		 	$time = $post_meta['_run_time'][0];
+			return $horse . ' - ' . $time;
+		}
+		return $title;
+	}
+
+	public function filter_the_content_show_runs( $content ) {
+		global $post;
+		$post_type = get_post_type( $post );
+		$post_meta = get_post_meta( $post->ID );
+		if ( 'horse' == $post_type ) {
+			$attributes = array(
+				'radioControl' => 'run',
+				'rangeControl' => 100,
+				'metaKey' => '_run_horse',
+				'metaValue' => $post->ID
+			);
+			$content.= '<div class="runs-with-horse"><h3>Runs with ' . $post->post_title . ':</h3>';
+			$content .= Strided_App_Admin::strided_member_content_block_render( $attributes );
+			$content .= '</div>';
+		}
+		if ( 'arena' == $post_type ) {
+			$attributes = array(
+				'radioControl' => 'run',
+				'rangeControl' => 100,
+				'metaKey' => '_run_arena',
+				'metaValue' => $post->ID
+			);
+			$content.= '<div class="runs-at-arena"><h3>Runs at ' . $post->post_title . ':</h3>';
+			$content .= Strided_App_Admin::strided_member_content_block_render( $attributes );
+			$content .= '</div>';
 		}
 		return $content;
 	}
