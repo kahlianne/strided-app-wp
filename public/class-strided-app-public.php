@@ -103,66 +103,66 @@ class Strided_App_Public {
 		global $post;
 		$post_type = get_post_type( $post );
 		$post_meta = get_post_meta( $post->ID );
-		if ( 'horse' == $post_type ) {
-			$registered_name = $post_meta['_horse_registered_name'][0];
-			$year_born = $post_meta['_horse_year_born'][0];
-			$gender = $post_meta['_horse_gender'][0];
+		if ( 'horse' == $post_type ) {	
 			$markup = '<div class="horse-information">';
-			if ( isset( $registered_name ) && null != $registered_name ) {
+			if ( isset( $post_meta['_horse_registered_name'][0] ) ) {
+				$registered_name = $post_meta['_horse_registered_name'][0];
 				$markup .= '<div class="horse-registered-name"><span class="label">Registered Name:</span> ' . esc_html( $registered_name ) . '</div>';
 			}
-			if ( isset( $year_born ) && null != $year_born ) {
+			if ( isset( $post_meta['_horse_year_born'][0] ) ) {
+				$year_born = $post_meta['_horse_year_born'][0];
 				$markup .= '<div class="horse-year-born"><span class="label">Year Born:</span> ' . esc_html( $year_born ) . '</div>';
 			}
-			if ( isset( $gender ) && null != $gender ) {
+			if ( isset( $post_meta['_horse_gender'][0] ) ) {
+				$gender = $post_meta['_horse_gender'][0];
 				$markup .= '<div class="horse-gender"><span class="label">Horse Gender:</span> ' . esc_html( $gender ) . '</div>';
 			}
 			$markup .= '<div class="horse-description">' . $content . '</div></div>';
 			return $markup;
 		}
 		if ( 'arena' == $post_type ) {
-			$address = $post_meta['_arena_address'][0];
 			$markup = '<div class="arena-information">';
-			if ( isset( $address ) && null != $address ) {
+			if ( isset( $post_meta['_arena_address'][0] ) ) {
+				$address = $post_meta['_arena_address'][0];
 				$markup .= '<div class="arena-address"><span class="label">Address:</span> ' . esc_html( $address ) . '</div>';
 			}
 			$markup .= '<div class="arena-description">' . $content . '</div></div>';
 			return $markup;
 		}
 		if ( 'run' == $post_type ) {
-			$arena = get_the_title( $post_meta['_run_arena'][0] );
-			$arena_url = get_permalink( $post_meta['_run_arena'][0] );
-			$horse = get_the_title( $post_meta['_run_horse'][0] );
-			$horse_url = get_permalink( $post_meta['_run_horse'][0] );
-			$time = $post_meta['_run_time'][0];
-			$placing = $post_meta['_run_placing'][0];
-			$class = $post_meta['_run_class'][0];
-			$winnings = $post_meta['_run_winnings'][0];
-			if ( isset( $post_meta[ '_run_video' ][0] ) && null != $post_meta[ '_run_video' ][0] ) {
-				$video_number = preg_match('/\d{9}/', $post_meta[ '_run_video' ][0], $matches);
-			}
 			$markup = '<div class="horse-information">';
-			if ( isset( $arena ) && null != $arena ) {
+			if ( isset( $post_meta['_run_arena'][0] ) ) {
+				$arena = get_the_title( $post_meta['_run_arena'][0] );
+				$arena_url = get_permalink( $post_meta['_run_arena'][0] );
 				$markup .= '<div class="run-arena"><span class="label">Arena:</span> <a href="' . esc_url( $arena_url ) . '">' . esc_html( $arena ) . '</a></div>';
 			}
-			if ( isset( $horse ) && null != $horse ) {
+			if ( isset( $post_meta['_run_horse'][0] ) ) {
+				$horse = get_the_title( $post_meta['_run_horse'][0] );
+				$horse_url = get_permalink( $post_meta['_run_horse'][0] );
 				$markup .= '<div class="run-horse"><span class="label">Horse:</span> <a href="' . esc_url( $horse_url ) . '">' . esc_html( $horse ) . '</a></div>';
 			}
-			if ( isset( $time ) && null != $time ) {
+			if ( isset( $post_meta['_run_time'][0] ) ) {
+				$time = $post_meta['_run_time'][0];
 				$markup .= '<div class="run-time"><span class="label">Time:</span> ' . esc_html( $time ) . ' seconds</div>';
 			}
-			if ( isset( $placing ) && null != $placing ) {
+			if ( isset( $post_meta['_run_placing'][0] ) ) {
+				$placing = $post_meta['_run_placing'][0];
 				$markup .= '<div class="run-placing"><span class="label">Placing:</span> ' . esc_html( $placing ) . '</div>';
 			}
-			if ( isset( $class ) && null != $class ) {
+			if ( isset( $post_meta['_run_class'][0] ) ) {
+				$class = $post_meta['_run_class'][0];
 				$markup .= '<div class="run-class"><span class="label">Class:</span> ' . esc_html( $class ) . '</div>';
 			}
-			if ( isset( $winnings ) && null != $winnings ) {
+			if ( isset( $post_meta['_run_winnings'][0] ) ) {
+				$winnings = $post_meta['_run_winnings'][0];
 				$markup .= '<div class="run-winnings"><span class="label">Winnings:</span> $' . esc_html( $winnings ) . '</div>';
 			}
 			$markup .= '<div class="run-description">' . $content . '</div>';
-			if ( isset( $matches[0] ) ) {
-				$markup .= '<div class="run-video"><iframe src="https://player.vimeo.com/video/' . $matches[0] . '" width="254" height="auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>';
+			if ( isset( $post_meta[ '_run_video' ][0] ) && null != $post_meta[ '_run_video' ][0] ) {
+				$video_number = preg_match('/\d{9}/', $post_meta[ '_run_video' ][0], $matches);
+				if ( isset( $matches[0] ) ) {
+					$markup .= '<div class="run-video"><iframe src="https://player.vimeo.com/video/' . $matches[0] . '" width="254" height="auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>';
+				}
 			}
 			$markup .= '</div>';
 			return $markup;
@@ -174,9 +174,15 @@ class Strided_App_Public {
 		$post_type = get_post_type( $id );
 		if ( 'run' == $post_type ) {
 			$post_meta = get_post_meta( $id );
-			$horse = get_the_title( $post_meta['_run_horse'][0] );
-		 	$time = $post_meta['_run_time'][0];
-			return $horse . ' - ' . $time;
+			if ( isset( $post_meta['_run_horse'][0] ) && '' != $post_meta['_run_horse'][0] && null != $post_meta['_run_horse'][0] ) {
+				$horse = get_the_title( $post_meta['_run_horse'][0] );
+			}
+			if ( isset( $post_meta['_run_time'][0] ) && '' != $post_meta['_run_time'][0] && null != $post_meta['_run_time'][0] ) {
+				$time = $post_meta['_run_time'][0];
+			}
+			if ( isset( $horse ) && isset( $time ) ) {
+				return $horse . ' - ' . $time;
+			}
 		}
 		return $title;
 	}
