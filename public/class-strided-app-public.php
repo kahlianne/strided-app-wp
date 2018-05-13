@@ -103,25 +103,47 @@ class Strided_App_Public {
 		global $post;
 		$post_type = get_post_type( $post );
 		$post_meta = get_post_meta( $post->ID );
-		if ( 'horse' == $post_type ) {	
-			$markup = '<div class="horse-information">';
-			if ( null != $post_meta['_horse_registered_name'][0] ) {
-				$registered_name = $post_meta['_horse_registered_name'][0];
+		$markup = '';
+		if ( 'horse' == $post_type ) {
+			$horse_name = $post->post_title;
+			$registered_name = $post_meta['_horse_registered_name'][0];
+			$year_born = $post_meta['_horse_year_born'][0];
+			$gender = $post_meta['_horse_gender'][0];
+			$image_url = get_the_post_thumbnail_url( $post->ID );
+			$edit_url = add_query_arg( array( 
+					'post' => $post->ID,
+					'horse-name' => $horse_name,
+					'registered-name' => $registered_name,
+					'year-born' => $year_born,	
+					'gender' => $gender,
+					'description' => wp_strip_all_tags( $content ),
+					'image-url' => $image_url,
+					'post-type' => 'horse'
+				), 
+				home_url( 'view-all-horses/edit-horse/' ) );
+			if ( current_user_can( 'edit_post', $post->ID ) ) {
+				$markup .= '<div class="post-actions"><a href="' 
+					. esc_url( $edit_url ) 
+					. '"><button>Edit</button></a><a onclick="return confirm(\'Are you sure you wish to delete this?\')" href="' 
+					. get_delete_post_link( $post->ID ) 
+					. '"><button>Delete</button></a></div>';
+					//TODO: redirect after deleting post
+			}
+			$markup .= '<div class="horse-information">';
+			if ( null != $registered_name ) {
 				$markup .= '<div class="horse-registered-name"><span class="label">Registered Name:</span> ' . esc_html( $registered_name ) . '</div>';
 			}
-			if ( null != $post_meta['_horse_year_born'][0] ) {
-				$year_born = $post_meta['_horse_year_born'][0];
+			if ( null != $year_born ) {
 				$markup .= '<div class="horse-year-born"><span class="label">Year Born:</span> ' . esc_html( $year_born ) . '</div>';
 			}
-			if ( null != $post_meta['_horse_gender'][0] ) {
-				$gender = $post_meta['_horse_gender'][0];
+			if ( null != $gender ) {
 				$markup .= '<div class="horse-gender"><span class="label">Horse Gender:</span> ' . esc_html( $gender ) . '</div>';
 			}
 			$markup .= '<div class="horse-description">' . $content . '</div></div>';
 			return $markup;
 		}
 		if ( 'arena' == $post_type ) {
-			$markup = '<div class="arena-information">';
+			$markup .= '<div class="arena-information">';
 			if ( null != $post_meta['_arena_address'][0] ) {
 				$address = $post_meta['_arena_address'][0];
 				$markup .= '<div class="arena-address"><span class="label">Address:</span> ' . esc_html( $address ) . '</div>';
@@ -130,7 +152,7 @@ class Strided_App_Public {
 			return $markup;
 		}
 		if ( 'run' == $post_type ) {
-			$markup = '<div class="horse-information">';
+			$markup .= '<div class="horse-information">';
 			if ( null != $post_meta['_run_arena'][0] ) {
 				$arena = get_the_title( $post_meta['_run_arena'][0] );
 				$arena_url = get_permalink( $post_meta['_run_arena'][0] );
@@ -216,4 +238,42 @@ class Strided_App_Public {
 		return $content;
 	}
 
+	public function action_edit_original_post_on_save( $form_data ) {
+		//if ( current_user_can( 'edit_post', $post_id_to_update ) ) {
+			$post_info = array();
+			$post_meta = array();
+			$form_id       = $form_data[ 'form_id' ];
+			$form_fields   =  $form_data[ 'fields' ];
+			foreach( $form_fields as $field ){
+				$field_id    = $field[ 'id' ];
+				$field_key   = $field[ 'key' ];
+				$field_value = $field[ 'value' ];
+				if ( 'edit_post_id' == $field_key ) {
+					$post_info['ID'] = $field_value;
+					$post_id_to_update = $field_value;
+				}
+				if ( 'edit_horse_name' == $field_key ) {
+					$post_info['post_title'] = $field_value;
+				}
+				if ( 'edit_horse_information' == $field_key ) {
+					$post_info['post_content'] = $field_value;
+				}
+				if ( 'edit_horse_registered_name' == $field_key ) {
+					$post_meta['_horse_registered_name'] = $field_value;
+				}
+				if ( 'edit_year_born' == $field_key ) {
+					$post_meta['_horse_year_born'] = $field_value;
+				}
+				if ( 'edit_horse_gender' == $field_key ) {
+					$post_meta['_horse_gender'] = $field_value;
+				}
+			}
+			wp_update_post( $post_info );
+			foreach ( $post_meta as $key => $value ) {
+				update_post_meta( $post_id_to_update, $key, $value );
+			}
+			$form_settings = $form_data[ 'settings' ];
+			$form_title    = $form_data[ 'settings' ][ 'title' ];
+		//}
+	}
 }

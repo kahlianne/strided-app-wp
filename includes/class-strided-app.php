@@ -185,6 +185,7 @@ class Strided_App {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'ninja_forms_render_options', $plugin_public, 'filter_add_horse_field_options', 10, 2 );
+		$this->loader->add_action( 'strided_ninja_forms_custom_action', $plugin_public, 'action_edit_original_post_on_save' );
 		$this->loader->add_filter( 'the_content', $plugin_public, 'filter_the_content_strided_post_type' );
 		$this->loader->add_filter( 'the_content', $plugin_public, 'filter_the_content_show_runs' );
 		$this->loader->add_filter( 'the_title', $plugin_public, 'filter_run_titles', 10, 2 );
