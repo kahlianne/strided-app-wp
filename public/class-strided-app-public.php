@@ -327,6 +327,10 @@ class Strided_App_Public {
 			if ( 'edit_horse_gender' == $field_key ) {
 				$post_meta['_horse_gender'] = $field_value;
 			}
+			if ( 'edit_horse_image' == $field_key && '' != $field_value ) {
+				$attachment_id = $this->strided_insert_attachment_from_url( reset( $field_value ), $post_id_to_update );
+				$post_thumbnail = set_post_thumbnail( $post_id_to_update, $attachment_id );
+			}
 		}
 		if ( current_user_can( 'edit_post', $post_id_to_update ) ) {
 			wp_update_post( $post_info );
@@ -357,6 +361,10 @@ class Strided_App_Public {
 			}
 			if ( 'edit_arena_address' == $field_key ) {
 				$post_meta['_arena_address'] = $field_value;
+			}
+			if ( 'edit_arena_image' == $field_key && '' != $field_value ) {
+				$attachment_id = $this->strided_insert_attachment_from_url( reset( $field_value ), $post_id_to_update );
+				$post_thumbnail = set_post_thumbnail( $post_id_to_update, $attachment_id );
 			}
 		}
 		if ( current_user_can( 'edit_post', $post_id_to_update ) ) {
@@ -414,5 +422,58 @@ class Strided_App_Public {
 				update_post_meta( $post_id_to_update, $key, $value );
 			}
 		}
+	}
+
+	/**
+	 * Insert an attachment from a URL address.
+	 *
+	 * @param  String $url 
+	 * @param  Int    $post_id 
+	 * @param  Array  $meta_data 
+	 * @return Int    Attachment ID
+	 */
+	function strided_insert_attachment_from_url( $url, $post_id = null ) {
+
+		if( !class_exists( 'WP_Http' ) )
+			include_once( ABSPATH . WPINC . '/class-http.php' );
+
+		$http = new WP_Http();
+		$response = $http->request( $url );
+		if( $response['response']['code'] != 200 ) {
+			return false;
+		}
+
+		$upload = wp_upload_bits( basename($url), null, $response['body'] );
+		if( !empty( $upload['error'] ) ) {
+			return false;
+		}
+
+		$file_path = $upload['file'];
+		$file_name = basename( $file_path );
+		$file_type = wp_check_filetype( $file_name, null );
+		$attachment_title = sanitize_file_name( pathinfo( $file_name, PATHINFO_FILENAME ) );
+		$wp_upload_dir = wp_upload_dir();
+
+		$post_info = array(
+			'guid'              => $wp_upload_dir['url'] . '/' . $file_name, 
+			'post_mime_type'    => $file_type['type'],
+			'post_title'        => $attachment_title,
+			'post_content'      => '',
+			'post_status'       => 'inherit',
+		);
+
+		// Create the attachment
+		$attach_id = wp_insert_attachment( $post_info, $file_path, $post_id );
+
+		// Include image.php
+		require_once( ABSPATH . 'wp-admin/includes/image.php' );
+
+		// Define attachment metadata
+		$attach_data = wp_generate_attachment_metadata( $attach_id, $file_path );
+
+		// Assign metadata to attachment
+		wp_update_attachment_metadata( $attach_id,  $attach_data );
+
+		return $attach_id;
 	}
 }
