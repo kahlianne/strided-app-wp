@@ -119,7 +119,7 @@ class Strided_App_Public {
 				'image-url'       => $image_url,
 				'post-type'       => 'horse'
 			), 
-			home_url( 'view-all-horses/edit-horse/' ) );
+			home_url( 'dashboard/view-all-horses/edit-horse/' ) );
 		if ( current_user_can( 'edit_post', $post->ID ) ) {
 			$markup .= '<div class="post-actions"><a href="' 
 				. esc_url( $edit_url ) 
@@ -153,7 +153,7 @@ class Strided_App_Public {
 				'description'   => wp_strip_all_tags( $content ),
 				'post-type'     => 'arena'
 			), 
-			home_url( 'view-all-horses/edit-arena/' ) );
+			home_url( 'dashboard/view-all-arenas/edit-arena/' ) );
 		if ( current_user_can( 'edit_post', $post->ID ) ) {
 			$markup .= '<div class="post-actions"><a href="' 
 				. esc_url( $edit_url ) 
@@ -194,7 +194,7 @@ class Strided_App_Public {
 				$edit_args[ $key ] = $$key;
 			}
 		}
-		$edit_url = add_query_arg(  $edit_args, home_url( 'view-all-runs/edit-run' ) );
+		$edit_url = add_query_arg(  $edit_args, home_url( 'dashboard/view-all-runs/edit-run' ) );
 		if ( current_user_can( 'edit_post', $post->ID ) ) {
 			$markup .= '<div class="post-actions"><a href="' 
 				. esc_url( $edit_url ) 
