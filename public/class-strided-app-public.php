@@ -191,7 +191,11 @@ class Strided_App_Public {
 		foreach ( $keys as $key ) {
 			if ( isset( $post_meta[ '_run_' . $key ][0] ) && $post_meta[ '_run_' . $key ][0] ) {
 				$$key = $post_meta[ '_run_' . $key ][0];
-				$edit_args[ $key ] = $$key;
+				if ( $key == 'horse' || $key = 'arena' ) {
+					$edit_args[ $key . '-name' ] = $$key;
+				} else {
+					$edit_args[ $key ] = $$key;
+				}
 			}
 		}
 		$edit_url = add_query_arg(  $edit_args, home_url( 'dashboard/view-all-runs/edit-run' ) );
