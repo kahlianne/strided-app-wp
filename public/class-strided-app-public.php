@@ -173,27 +173,28 @@ class Strided_App_Public {
 	public function create_markup_run_display( $content, $post, $post_meta ) {
 		$markup = '';
 		$run_name = $post->post_title;
-		$date = $post_meta['_run_date'][0];
-		$arena = $post_meta['_run_arena'][0];
-		$horse = $post_meta['_run_horse'][0];
-		$time = $post_meta['_run_time'][0];
-		$placing = $post_meta['_run_placing'][0];
-		$class = $post_meta['_run_class'][0];
-		$winnings = $post_meta['_run_winnings'][0];
-		$video_url = $post_meta[ '_run_video' ][0];
-		$edit_url = add_query_arg( array( 
-				'post'        => $post->ID,
-				'arena-name'  => $arena,
-				'horse-name'  => $horse,
-				'time'        => $time,	
-				'placing'     => $placing,
-				'class'       => $class,
-				'winnings'    => $winnings,
-				'description' => wp_strip_all_tags( $content ),
-				'video-url'   => $video_url,
-				'post-type'   => 'run'
-			), 
-			home_url( 'view-all-runs/edit-run' ) );
+		$keys = array(
+			'date',
+			'arena',
+			'horse',
+			'time',
+			'placing',
+			'class',
+			'winnings',
+			'video'
+		);
+		$edit_args = array( 
+			'post'        => $post->ID,
+			'description' => wp_strip_all_tags( $content ),
+			'post-type'   => 'run'
+		);
+		foreach ( $keys as $key ) {
+			if ( isset( $post_meta[ '_run_' . $key ][0] ) && $post_meta[ '_run_' . $key ][0] ) {
+				$$key = $post_meta[ '_run_' . $key ][0];
+				$edit_args[ $key ] = $$key;
+			}
+		}
+		$edit_url = add_query_arg(  $edit_args, home_url( 'view-all-runs/edit-run' ) );
 		if ( current_user_can( 'edit_post', $post->ID ) ) {
 			$markup .= '<div class="post-actions"><a href="' 
 				. esc_url( $edit_url ) 
@@ -203,27 +204,27 @@ class Strided_App_Public {
 				//TODO: redirect after deleting post
 		}
 		$markup .= '<div class="run-information">';
-		if ( null != $date ) {
+		if ( isset( $date ) ) {
 			$markup .= '<div class="run-date"><span class="label">Date: </span> ' . esc_html( $date ) . '</div>';
 		}
-		if ( null != $arena ) {
+		if ( isset( $arena ) ) {
 			$arena_url = get_permalink( $arena );
 			$markup .= '<div class="run-arena"><span class="label">Arena:</span> <a href="' . esc_url( $arena_url ) . '">' . esc_html( get_the_title( $arena ) ) . '</a></div>';
 		}
-		if ( null != $horse ) {
+		if ( isset( $horse ) ) {
 			$horse_url = get_permalink( $horse );
 			$markup .= '<div class="run-horse"><span class="label">Horse:</span> <a href="' . esc_url( $horse_url ) . '">' . esc_html( get_the_title( $horse ) ) . '</a></div>';
 		}
-		if ( null != $time ) {
+		if ( isset( $time ) ) {
 			$markup .= '<div class="run-time"><span class="label">Time:</span> ' . esc_html( $time ) . ' seconds</div>';
 		}
-		if ( null != $placing  ) {
+		if ( isset( $placing ) ) {
 			$markup .= '<div class="run-placing"><span class="label">Placing:</span> ' . esc_html( $placing ) . '</div>';
 		}
-		if ( null != $class ) {
+		if ( isset( $class ) ) {
 			$markup .= '<div class="run-class"><span class="label">Class:</span> ' . esc_html( $class ) . '</div>';
 		}
-		if ( null != $winnings ) {
+		if ( isset( $winnings ) ) {
 			$markup .= '<div class="run-winnings"><span class="label">Winnings:</span> $' . esc_html( $winnings ) . '</div>';
 		}
 		$markup .= '<div class="run-description">' . $content . '</div>';
