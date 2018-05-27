@@ -15,10 +15,12 @@
 
 		var horse = getParameterByName('horse-name');
 		var arena = getParameterByName('arena-name');
+		var horseGender = getParameterByName('gender');
 
 		setTimeout(function(){
 			$(".arena-select").val(arena);
 			$(".horse-select").val(horse);
+			$(".gender-select").val(horseGender);
 		}, 1000);
 
 	})
