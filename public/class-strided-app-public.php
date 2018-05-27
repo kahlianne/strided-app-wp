@@ -191,7 +191,7 @@ class Strided_App_Public {
 		foreach ( $keys as $key ) {
 			if ( isset( $post_meta[ '_run_' . $key ][0] ) && $post_meta[ '_run_' . $key ][0] ) {
 				$$key = $post_meta[ '_run_' . $key ][0];
-				if ( $key == 'horse' || $key = 'arena' ) {
+				if ( $key == 'horse' || $key == 'arena' ) {
 					$edit_args[ $key . '-name' ] = $$key;
 				} else {
 					$edit_args[ $key ] = $$key;
