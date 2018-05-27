@@ -479,54 +479,72 @@ class Strided_App_Admin {
 	public static function strided_member_content_block_render( $attributes ) {
 		$numposts = $attributes['rangeControl'];
 		$post_type = $attributes['radioControl'];
+		$page = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
+		$offset = ( $page - 1 ) * $numposts;
 		$args = array(
-			'numberposts' => $numposts,
-			'post_status' => 'publish',
-			'post_type'   => $post_type,
-			'author'      => get_current_user_id(),
+			'posts_per_page' => $numposts,
+			'offset'         => $offset,
+			'post_status'    => 'publish',
+			'post_type'      => $post_type,
+			'author'         => get_current_user_id(),
 		);
 		if ( isset( $attributes[ 'metaKey' ] ) && isset( $attributes[ 'metaValue' ] ) ) {
 			$args['meta_key'] = $attributes[ 'metaKey' ];
 			$args['meta_value'] = $attributes[ 'metaValue' ];
 		}
-		$recent_posts = wp_get_recent_posts( $args );
+		$recent_posts = new WP_Query( $args );
 
-		if ( 0 === count( $recent_posts ) ) {
+		if ( $recent_posts->have_posts() ) {
+			$markup = '<div class="strided-member-content-block"><ul class="strided-member-content">';
+
+			while ( $recent_posts->have_posts() ) {
+				$recent_posts->the_post();
+				global $post;
+				$post_id = $post->ID;
+				$markup .= '<li class="strided-member-content-item">';
+				if ( $post_type == 'horse' || $post_type == 'arena' ) {
+					$markup .= '<div class="item-image">'
+						. get_the_post_thumbnail( $post_id, 'thumbnail' )
+						. '</div><div class="item-name">';
+					$markup .= sprintf(
+						'<a href="%1$s">%2$s</a></div></li>',
+						esc_url( get_permalink( $post_id ) ),
+						esc_html( get_the_title( $post_id ) )
+					);
+				} elseif ( $post_type == 'run' ) {
+					$horse = get_the_title( get_post_meta( $post_id, '_run_horse', true ) );
+					$arena = get_the_title( get_post_meta( $post_id, '_run_arena', true ) );
+					$markup .= '<div class="item-info"><p class="title"><a href="' 
+					. esc_url( get_permalink( $post_id ) )
+					. '">' 
+					. esc_html( get_the_title( $post_id ) )
+					. '</a></p><p class="run-time">' 
+					. esc_html( get_post_meta( $post_id, '_run_time', true ) )
+					. '</p><p class="run-horse">' 
+					. esc_html( $horse )
+					. '</p><p class="run-arena">' 
+					. esc_html( $arena )
+					. '</p>';
+				}
+			}
+			$markup .= '</ul><ul class="pagination">';
+			if ( get_previous_posts_link( '<< Previous ' . $post_type . 's', $recent_posts->max_num_pages ) ) {
+				$markup .= '<li id="previous-posts">'
+				. get_previous_posts_link( '<< Previous ' . $post_type . 's', $recent_posts->max_num_pages )
+				. '</li>';
+			}
+			if ( get_next_posts_link( 'Next  ' . $post_type . 's >>', $recent_posts->max_num_pages ) ) {
+				$markup .= '<li id="next-posts">'
+				. get_next_posts_link( 'Next  ' . $post_type . 's >>', $recent_posts->max_num_pages )
+				. '</li>';
+			}
+			$markup .= '</ul></div>';
+
+			wp_reset_postdata();
+			return $markup;
+		} else {
 			return '<p>Looks like you haven\'t added any ' . $post_type . 's yet!</p>';
 		}
-		$markup = '<div class="strided-member-content-block"><ul class="strided-member-content">';
-
-		foreach( $recent_posts as $post ) {
-			$post_id = $post['ID'];
-			$markup .= '<li class="strided-member-content-item">';
-			if ( $post_type == 'horse' || $post_type == 'arena' ) {
-				$markup .= '<div class="item-image">'
-					. get_the_post_thumbnail( $post_id, 'thumbnail' )
-					. '</div><div class="item-name">';
-				$markup .= sprintf(
-					'<a href="%1$s">%2$s</a></div></li>',
-					esc_url( get_permalink( $post_id ) ),
-					esc_html( get_the_title( $post_id ) )
-				);
-			} elseif ( $post_type == 'run' ) {
-				$horse = get_the_title( get_post_meta( $post_id, '_run_horse', true ) );
-				$arena = get_the_title( get_post_meta( $post_id, '_run_arena', true ) );
-				$markup .= '<div class="item-info"><p class="title"><a href="' 
-				. esc_url( get_permalink( $post_id ) )
-				. '">' 
-				. esc_html( get_the_title( $post_id ) )
-				. '</a></p><p class="run-time">' 
-				. esc_html( get_post_meta( $post_id, '_run_time', true ) )
-				. '</p><p class="run-horse">' 
-				. esc_html( $horse )
-				. '</p><p class="run-arena">' 
-				. esc_html( $arena )
-				. '</p>';
-			}
-		}
-		$markup .= '</ul></div>';
-
-		return $markup;
 
 	}
 
