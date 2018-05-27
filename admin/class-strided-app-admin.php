@@ -473,6 +473,39 @@ class Strided_App_Admin {
 		);
 	}
 
+	public function build_query_meta_filters() {
+		$filters = array(
+			'relation' => 'AND',
+			array(
+				'key'     => '_run_horse',
+				'value'   => '',
+				'compare' => '!=',
+			),
+			array(
+				'key'     => '_run_arena',
+				'value'   => '',
+				'compare' => '!=',
+			),
+		);
+		$horse_name = $_GET['horse-name'];
+		if ( 'all' != $horse_name ) {
+			$filters[] = array(
+				'key'     => '_run_horse',
+				'value'   => $horse_name,
+				'compare' => '=',
+			);
+		}
+		$arena_name = $_GET['arena-name'];
+		if ( 'all' != $arena_name ) {
+			$filters[] = array(
+				'key'     => '_run_arena',
+				'value'   => $arena_name,
+				'compare' => '=',
+			);
+		}
+		return $filters;
+	}
+
 	/**
  	* Callback function for displaying block content on the front end
  	*/
@@ -492,11 +525,21 @@ class Strided_App_Admin {
 			$args['meta_key'] = $attributes[ 'metaKey' ];
 			$args['meta_value'] = $attributes[ 'metaValue' ];
 		}
+		/* Filter the all runs page by set parameters */
+		if ( isset( $_GET['filter-runs'] ) ) {
+			$args[ 'meta_query' ] = $this::build_query_meta_filters();
+			if ( $_GET['order-by'] == 'run-time' ) {
+				$args[ 'meta_key' ] = '_run_time';
+				$args[ 'orderby' ] = 'meta_value_num';
+				$args [ 'order' ] = 'ASC';
+			}
+		}
+
 		$recent_posts = new WP_Query( $args );
 
 		if ( $recent_posts->have_posts() ) {
-			$markup = '<div class="strided-member-content-block"><ul class="strided-member-content">';
-
+			$markup = '<div class="strided-member-content-block">';
+			$markup .= '<ul class="strided-member-content">';
 			while ( $recent_posts->have_posts() ) {
 				$recent_posts->the_post();
 				global $post;

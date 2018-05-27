@@ -16,11 +16,21 @@
 		var horse = getParameterByName('horse-name');
 		var arena = getParameterByName('arena-name');
 		var horseGender = getParameterByName('gender');
+		var order = getParameterByName('order-by');
 
 		setTimeout(function(){
-			$(".arena-select").val(arena);
-			$(".horse-select").val(horse);
-			$(".gender-select").val(horseGender);
+			if (arena) {
+				$(".arena-select").val(arena);
+			}
+			if (horse) {
+				$(".horse-select").val(horse);
+			}
+			if (gender) {
+				$(".gender-select").val(horseGender);
+			}
+			if (order) {
+				$(".order-by-select").val(order);
+			}
 		}, 1000);
 
 	})
