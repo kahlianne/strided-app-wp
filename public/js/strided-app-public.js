@@ -25,7 +25,7 @@
 			if (horse) {
 				$(".horse-select").val(horse);
 			}
-			if (gender) {
+			if (horseGender) {
 				$(".gender-select").val(horseGender);
 			}
 			if (order) {
