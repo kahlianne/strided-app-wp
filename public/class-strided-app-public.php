@@ -102,6 +102,23 @@ class Strided_App_Public {
 		}
 		return $options;
 	}
+
+	public function calculate_horse_winnings( $id ) {
+		$args = array(
+			'meta_key' => '_run_horse',
+			'meta_value' => $id,
+			'post_type' => 'run'
+		);
+		$query = new WP_Query( $args );
+		$runs_with_horse = $query->posts;
+		$winnings = 0;
+		foreach ( $runs_with_horse as $run ) {
+			$winnings += get_post_meta( $run->ID, '_run_winnings', true );
+		}
+		wp_reset_query();
+		return $winnings;
+	}
+
 	public function create_markup_horse_display( $content, $post, $post_meta ) {
 		$markup = '';
 		$horse_name = $post->post_title;
@@ -109,6 +126,7 @@ class Strided_App_Public {
 		$year_born = $post_meta['_horse_year_born'][0];
 		$gender = $post_meta['_horse_gender'][0];
 		$image_url = get_the_post_thumbnail_url( $post->ID );
+		$winnings = $this->calculate_horse_winnings( $post->ID );
 		$edit_url = add_query_arg( array( 
 				'post'            => $post->ID,
 				'horse-name'      => $horse_name,
@@ -137,6 +155,9 @@ class Strided_App_Public {
 		}
 		if ( null != $gender ) {
 			$markup .= '<div class="horse-gender"><span class="label">Horse Gender:</span> ' . esc_html( $gender ) . '</div>';
+		}
+		if ( null != $winnings ) {
+			$markup .= '<div class="total-winnings"><span class="label">Total Winnings:</span> $' . esc_html( $winnings ) . '</div>';
 		}
 		$markup .= '<div class="horse-description">' . $content . '</div></div>';
 		return $markup;

@@ -589,6 +589,7 @@ class Strided_App_Admin {
 			} else {
 				return '<p>Looks like you haven\'t added any ' . $post_type . 's yet!</p>';
 			}
+			wp_reset_query();
 		}
 	}
 
