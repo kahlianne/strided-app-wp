@@ -148,17 +148,19 @@ class Strided_App_Public {
 		}
 		$markup .= '<div class="horse-information">';
 		if ( null != $registered_name ) {
-			$markup .= '<div class="horse-registered-name"><span class="label">Registered Name:</span> ' . esc_html( $registered_name ) . '</div>';
+			$markup .= '<div class="horse-registered-name"><span class="label">Registered Name: </span>' . esc_html( $registered_name ) . '</div>';
 		}
+		$markup .= '<div class="horse-details">';
 		if ( null != $year_born ) {
-			$markup .= '<div class="horse-year-born"><span class="label">Year Born:</span> ' . esc_html( $year_born ) . '</div>';
+			$markup .= '<div class="horse-year-born"><span class="label">Year Born: </span>' . esc_html( $year_born ) . '</div>';
 		}
 		if ( null != $gender ) {
-			$markup .= '<div class="horse-gender"><span class="label">Horse Gender:</span> ' . esc_html( $gender ) . '</div>';
+			$markup .= '<div class="horse-gender"><span class="label">Horse Gender: </span>' . esc_html( $gender ) . '</div>';
 		}
 		if ( null != $winnings ) {
-			$markup .= '<div class="total-winnings"><span class="label">Total Winnings:</span> $' . esc_html( $winnings ) . '</div>';
+			$markup .= '<div class="total-winnings"><span class="label">Total Winnings: </span>$' . esc_html( $winnings ) . '</div>';
 		}
+		$markup .= '</div>';
 		$markup .= '<div class="horse-description">' . $content . '</div></div>';
 		return $markup;
 	}
