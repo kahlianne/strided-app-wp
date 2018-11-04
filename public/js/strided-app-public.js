@@ -17,6 +17,7 @@
 		var arena = getParameterByName('arena-name');
 		var horseGender = getParameterByName('gender');
 		var order = getParameterByName('order-by');
+		var date = getParameterByName('date');
 
 		setTimeout(function(){
 			if (arena) {
@@ -30,6 +31,9 @@
 			}
 			if (order) {
 				$(".order-by-select").val(order);
+			}
+			if (date) {
+				$(".datepicker").val(date);
 			}
 		}, 1000);
 
