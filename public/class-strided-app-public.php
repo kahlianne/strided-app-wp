@@ -113,7 +113,7 @@ class Strided_App_Public {
 		$runs_with_horse = $query->posts;
 		$winnings = 0;
 		foreach ( $runs_with_horse as $run ) {
-			$winnings += get_post_meta( $run->ID, '_run_winnings', true );
+			$winnings += (int) get_post_meta( $run->ID, '_run_winnings', true );
 		}
 		wp_reset_query();
 		return $winnings;
